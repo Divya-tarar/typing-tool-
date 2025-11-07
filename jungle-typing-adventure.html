@@ -1,0 +1,619 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿🦋🥀 Jungle Typing Adventure 🌿🦋🥀</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            min-height: 100vh;
+            background-image:url('https://images.unsplash.com/photo-1511497584788-876760111969?w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+        body::before{
+            content:'';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 77, 46, 0.3);
+            z-index: 0;
+        }
+        .jungle-decoration {
+            position: fixed;
+            font-size: 50px;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: float 8s ease-in-out infinity;
+            z-index: 1;
+        }
+        @keyframes float{
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(-40px) rotate(15deg);
+                opacity: 1;
+            }
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: tgba(255, 255, 255, 0.97);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 5px solid #2d6a4f
+            position: relative;
+            backdrop-filter: blur(10px);
+            z-index: 2;          
+        }
+        .container::before {
+            content: '🌺🌿🌸🌿🦜🌿🌺🌿🌸';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translate(-50%);
+            font-size: 28px;
+            background: rgb(117, 169, 117);
+            padding: 5px 30px;
+            border-radius: 0 4px 10px rgba(0, 0, 0, 0.2);      
+        }
+        .container::after {
+            content: '🦋🌴🌻🌴🌴🌻🌴🦋';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+            background: rgb(39, 73, 47);
+            padding: 5px 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h1{
+            text-align: center;
+            color: #1a4d2e;
+            margin-bottom: 10px;
+            font-size: 42px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+
+        }
+        .subtitle {
+            text-align: center;
+            color: #40916c;
+            margin-bottom: 30px;
+            font-size: 18px;
+            font-style: italic;
+        }
+        .info-box {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+        .info-item {
+            flex: 1;
+            text-align: center;
+            background: linear-gradient(135deg, #d8f3dc 0%, #b7e4c7 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #52b788;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-item label {
+            display: block;
+            color: #1a4d2e;
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .info-item span {
+            display: block;
+            font-size: 32px;
+            font-weight: bold;
+            color: #2d6a4f;
+        }
+
+        #textDisplay {
+            background: linear-gradient(135deg, #f1faee 0%, #d8f3dc 100%);
+            padding: 30px;
+            border-radius: 15px;
+            font-size: 20px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            border: 3px solid #52b788;
+            min-height: 150px;
+            letter-spacing: 0.5px;
+            font-family: 'Courier New', monospace;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .char {
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .char-correct {
+            color: transparent;
+            background: #52b788;
+            padding: 2px 4px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .char-correct::after {
+            content: '✓';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .char-incorrect {
+            color: #e63946;
+            background: #ffccd5;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-decoration: line-through;
+        }
+
+        .char-current {
+            background: #95d5b2;
+            padding: 2px 4px;
+            border-radius: 4px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.5; }
+        }
+
+        #inputBox {
+            width: 100%;
+            padding: 20px;
+            font-size: 18px;
+            border: 3px solid #52b788;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            background: #f1faee;
+            color: #1a4d2e;
+            transition: all 0.3s;
+        }
+
+        #inputBox:focus {
+            outline: none;
+            border-color: #2d6a4f;
+            box-shadow: 0 0 20px rgba(82, 183, 136, 0.4);
+            background: white;
+        }
+
+        #inputBox:disabled {
+            background: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 18px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #startBtn {
+            background: linear-gradient(135deg, #52b788 0%, #2d6a4f 100%);
+            color: white;
+        }
+
+        #startBtn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(82, 183, 136, 0.4);
+        }
+
+        #resetBtn {
+            background: linear-gradient(135deg, #f4a261 0%, #e76f51 100%);
+            color: white;
+        }
+
+        #resetBtn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(231, 111, 81, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-box {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #d8f3dc 0%, #b7e4c7 100%);
+            border-radius: 15px;
+            border: 4px solid #2d6a4f;
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        .result-box h2 {
+            color: #1a4d2e;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 32px;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .result-stat {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #52b788;
+        }
+
+        .result-stat label {
+            display: block;
+            color: #1a4d2e;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .result-stat span {
+            display: block;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2d6a4f;
+        }
+
+        .instruction {
+            text-align: center;
+            color: #2d6a4f;
+            margin-bottom: 20px;
+            font-size: 16px;
+            background: #d8f3dc;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px dashed #52b788;
+        }
+            .creator-credit {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 3px solid #52b788;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            font-family: Georgia, serif;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .creator-credit .label {
+            font-size: 12px;
+            color: #40916c;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .creator-credit .name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a4d2e;
+            text-align: center;
+        }
+
+        .creator-credit .decoration {
+            font-size: 20px;
+            margin-top: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- More jungle decorations with colorful flowers -->
+    <div class="jungle-decoration" style="top: 8%; left: 5%; animation-delay: 0s;">🌺</div>
+    <div class="jungle-decoration" style="top: 15%; right: 8%; animation-delay: 1s;">🦜</div>
+    <div class="jungle-decoration" style="top: 25%; left: 12%; animation-delay: 2s;">🌸</div>
+    <div class="jungle-decoration" style="bottom: 20%; left: 8%; animation-delay: 3s;">🦋</div>
+    <div class="jungle-decoration" style="bottom: 35%; right: 10%; animation-delay: 4s;">🌴</div>
+    <div class="jungle-decoration" style="top: 40%; right: 15%; animation-delay: 1.5s;">🌻</div>
+    <div class="jungle-decoration" style="top: 55%; left: 18%; animation-delay: 2.5s;">🌷</div>
+    <div class="jungle-decoration" style="bottom: 15%; right: 30%; animation-delay: 4.5s;">🌼</div>
+    <div class="jungle-decoration" style="top: 30%; left: 25%; animation-delay: 1s;">🌹</div>
+    <div class="jungle-decoration" style="top: 80%; left: 30%; animation-delay: 3s;">🌺</div>
+    <div class="jungle-decoration" style="top: 50%; right: 35%; animation-delay: 2.5s;">🦚</div>
+    <div class="jungle-decoration" style="bottom: 25%; left: 35%; animation-delay: 4s;">🌿</div>
+
+    <div class="container">
+        <h1>🌿 Jungle Typing Adventure 🦜</h1>
+        <p class="subtitle">Type through the jungle and watch the magic happen!</p>
+        
+        <div class="instruction">
+            🌺 Click "Start Adventure" and type the text below. Watch as each letter disappears like magic! 🌺
+        </div>
+
+        <div class="info-box">
+            <div class="info-item">
+                <label>⏱️ Time</label>
+                <span id="timer">0s</span>
+            </div>
+            <div class="info-item">
+                <label>⚡ WPM</label>
+                <span id="wpm">0</span>
+            </div>
+            <div class="info-item">
+                <label>🎯 Accuracy</label>
+                <span id="accuracy">100%</span>
+            </div>
+        </div>
+
+        <div id="textDisplay">Click "Start Adventure" to begin your jungle typing journey!</div>
+
+        <textarea id="inputBox" placeholder="Your typing appears here..." disabled rows="3"></textarea>
+
+        <div class="buttons">
+            <button id="startBtn">🚀 Start Adventure</button>
+            <button id="resetBtn">🔄 New Journey</button>
+        </div>
+
+        <div class="result-box" id="resultBox">
+            <h2>🎉 Journey Complete! 🎉</h2>
+            <div class="result-stats">
+                <div class="result-stat">
+                    <label>⚡ Final WPM</label>
+                    <span id="finalWpm">0</span>
+                </div>
+                <div class="result-stat">
+                    <label>🎯 Accuracy</label>
+                    <span id="finalAccuracy">0%</span>
+                </div>
+                <div class="result-stat">
+                    <label>⏱️ Time</label>
+                    <span id="finalTime">0s</span>
+                </div>
+                <div class="result-stat">
+                    <label>❌ Mistakes</label>
+                    <span id="finalErrors">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Creator Credit -->
+    <div class="creator-credit">
+        <div class="label">🌺 Created by 🌺</div>
+        <div class="name">Divya Tarar</div>
+        <div class="decoration">🌿✨</div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            
+            // Shorter jungle paragraphs (2-3 lines each)
+            const jungleTexts = [
+                "Deep in the jungle, exotic birds sing while monkeys swing from vine to vine. Colorful butterflies dance between the trees as sunlight filters through the canopy.",
+                
+                "The rainforest awakens at dawn with howler monkeys announcing the new day. Toucans and parrots join the chorus while the humid air fills with life.",
+                
+                "Ancient trees tower above, wrapped in climbing vines and orchids. The jungle floor is alive with rustling leaves and the calls of hidden creatures.",
+                
+                "Rivers wind through the landscape carrying life to all corners of this vast ecosystem. Indigenous wisdom teaches us to preserve these precious wild spaces.",
+                
+                "Tropical flowers bloom in vibrant colors attracting hummingbirds and insects. Life and death dance together in an endless cycle of renewal and transformation."
+            ];
+
+            // Get elements
+            const textDisplay = document.getElementById('textDisplay');
+            const inputBox = document.getElementById('inputBox');
+            const startBtn = document.getElementById('startBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const timerDisplay = document.getElementById('timer');
+            const wpmDisplay = document.getElementById('wpm');
+            const accuracyDisplay = document.getElementById('accuracy');
+            const resultBox = document.getElementById('resultBox');
+            const finalWpm = document.getElementById('finalWpm');
+            const finalAccuracy = document.getElementById('finalAccuracy');
+            const finalTime = document.getElementById('finalTime');
+            const finalErrors = document.getElementById('finalErrors');
+
+            // Variables
+            let originalText = '';
+            let startTime = 0;
+            let timerInterval = null;
+            let isTestActive = false;
+
+            function updateTimer() {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                timerDisplay.textContent = elapsed + 's';
+            }
+
+            function updateDisplay(typedText) {
+                let html = '';
+                let correctCount = 0;
+                let errorCount = 0;
+
+                for (let i = 0; i < originalText.length; i++) {
+                    const char = originalText[i];
+                    
+                    if (i < typedText.length) {
+                        if (typedText[i] === char) {
+                            // Correct - show checkmark (letter disappears)
+                            html += `<span class="char char-correct">${char}</span>`;
+                            correctCount++;
+                        } else {
+                            // Incorrect
+                            html += `<span class="char char-incorrect">${char}</span>`;
+                            errorCount++;
+                        }
+                    } else if (i === typedText.length) {
+                        // Current character
+                        html += `<span class="char char-current">${char}</span>`;
+                    } else {
+                        // Not yet typed
+                        html += `<span class="char">${char}</span>`;
+                    }
+                }
+
+                textDisplay.innerHTML = html;
+
+                // Update real-time stats
+                if (typedText.length > 0) {
+                    const accuracy = Math.round((correctCount / typedText.length) * 100);
+                    accuracyDisplay.textContent = accuracy + '%';
+
+                    const elapsed = (Date.now() - startTime) / 1000;
+                    const minutes = elapsed / 60;
+                    const words = typedText.length / 5;
+                    const wpm = Math.round(words / minutes);
+                    wpmDisplay.textContent = wpm > 0 ? wpm : 0;
+                }
+            }
+
+            function finishTest() {
+                isTestActive = false;
+                clearInterval(timerInterval);
+                inputBox.disabled = true;
+                startBtn.disabled = false;
+
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const typedText = inputBox.value;
+
+                let errors = 0;
+                for (let i = 0; i < originalText.length; i++) {
+                    if (typedText[i] !== originalText[i]) {
+                        errors++;
+                    }
+                }
+
+                const totalChars = originalText.length;
+                const correctChars = totalChars - errors;
+                const accuracy = Math.round((correctChars / totalChars) * 100);
+                const minutes = elapsed / 60;
+                const words = totalChars / 5;
+                const wpm = Math.round(words / minutes);
+
+                finalWpm.textContent = wpm;
+                finalAccuracy.textContent = accuracy + '%';
+                finalTime.textContent = elapsed + 's';
+                finalErrors.textContent = errors;
+
+                resultBox.classList.add('show');
+            }
+
+            function init() {
+                const randomIndex = Math.floor(Math.random() * jungleTexts.length);
+                originalText = jungleTexts[randomIndex];
+                
+                textDisplay.innerHTML = originalText.split('').map(char => 
+                    `<span class="char">${char}</span>`
+                ).join('');
+                
+                inputBox.value = '';
+                inputBox.disabled = true;
+                timerDisplay.textContent = '0s';
+                wpmDisplay.textContent = '0';
+                accuracyDisplay.textContent = '100%';
+                resultBox.classList.remove('show');
+                isTestActive = false;
+                startBtn.disabled = false;
+                
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                }
+            }
+
+            startBtn.addEventListener('click', function() {
+                if (isTestActive) return;
+                
+                isTestActive = true;
+                inputBox.disabled = false;
+                inputBox.focus();
+                startBtn.disabled = true;
+                resultBox.classList.remove('show');
+                
+                startTime = Date.now();
+                timerInterval = setInterval(updateTimer, 1000);
+            });
+
+            inputBox.addEventListener('input', function() {
+                if (!isTestActive) return;
+                
+                const typedText = inputBox.value;
+                updateDisplay(typedText);
+                
+                if (typedText.length >= originalText.length) {
+                    finishTest();
+                }
+            });
+
+            resetBtn.addEventListener('click', function() {
+                init();
+            });
+
+            init();
+        });
+    </script>
+</body>
+</html>
+```
+
+
+
+
