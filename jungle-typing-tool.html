@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿 Jungle Typing Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a4d2e 0%, #2d6a4f 25%, #40916c 50%, #52b788 75%, #74c69d 100%);
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* Animated leaves background */
+        body::before {
+            content: '🌿';
+            position: fixed;
+            font-size: 100px;
+            opacity: 0.1;
+            top: -50px;
+            left: 10%;
+            animation: sway 6s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '🍃';
+            position: fixed;
+            font-size: 80px;
+            opacity: 0.1;
+            bottom: -30px;
+            right: 15%;
+            animation: sway 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg) translateY(0); }
+            50% { transform: rotate(5deg) translateY(-20px); }
+        }
+
+        .jungle-decoration {
+            position: fixed;
+            font-size: 60px;
+            opacity: 0.15;
+            pointer-events: none;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 5px solid #2d6a4f;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Decorative vines */
+        .container::before {
+            content: '🌿🌺🌿';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+            background: white;
+            padding: 0 20px;
+            border-radius: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a4d2e;
+            margin-bottom: 10px;
+            font-size: 42px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #40916c;
+            margin-bottom: 30px;
+            font-size: 18px;
+            font-style: italic;
+        }
+
+        .info-box {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .info-item {
+            flex: 1;
+            text-align: center;
+            background: linear-gradient(135deg, #d8f3dc 0%, #b7e4c7 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #52b788;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-item label {
+            display: block;
+            color: #1a4d2e;
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .info-item span {
+            display: block;
+            font-size: 32px;
+            font-weight: bold;
+            color: #2d6a4f;
+        }
+
+        #textDisplay {
+            background: linear-gradient(135deg, #f1faee 0%, #d8f3dc 100%);
+            padding: 30px;
+            border-radius: 15px;
+            font-size: 22px;
+            line-height: 2;
+            margin-bottom: 20px;
+            border: 3px solid #52b788;
+            min-height: 200px;
+            letter-spacing: 0.5px;
+            font-family: 'Courier New', monospace;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .char {
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .char-typed {
+            color: #2d6a4f;
+            font-weight: bold;
+            background: #b7e4c7;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .char-correct {
+            color: transparent;
+            background: #52b788;
+            padding: 2px 4px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .char-correct::after {
+            content: '✓';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .char-incorrect {
+            color: #e63946;
+            background: #ffccd5;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-decoration: line-through;
+        }
+
+        .char-current {
+            background: #95d5b2;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.5; }
+        }
+
+        #inputBox {
+            width: 100%;
+            padding: 20px;
+            font-size: 20px;
+            border: 3px solid #52b788;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            background: #f1faee;
+            color: #1a4d2e;
+            transition: all 0.3s;
+        }
+
+        #inputBox:focus {
+            outline: none;
+            border-color: #2d6a4f;
+            box-shadow: 0 0 20px rgba(82, 183, 136, 0.4);
+            background: white;
+        }
+
+        #inputBox:disabled {
+            background: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 18px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #startBtn {
+            background: linear-gradient(135deg, #52b788 0%, #2d6a4f 100%);
+            color: white;
+        }
+
+        #startBtn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(82, 183, 136, 0.4);
+        }
+
+        #resetBtn {
+            background: linear-gradient(135deg, #f4a261 0%, #e76f51 100%);
+            color: white;
+        }
+
+        #resetBtn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(231, 111, 81, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .result-box {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #d8f3dc 0%, #b7e4c7 100%);
+            border-radius: 15px;
+            border: 4px solid #2d6a4f;
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        .result-box h2 {
+            color: #1a4d2e;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 32px;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .result-stat {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #52b788;
+        }
+
+        .result-stat label {
+            display: block;
+            color: #1a4d2e;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .result-stat span {
+            display: block;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2d6a4f;
+        }
+
+        .instruction {
+            text-align: center;
+            color: #2d6a4f;
+            margin-bottom: 20px;
+            font-size: 16px;
+            background: #d8f3dc;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px dashed #52b788;
+        }
+    </style>
+</head>
+<body>
+    <!-- Jungle decorations -->
+    <div class="jungle-decoration" style="top: 10%; left: 5%;">🌺</div>
+    <div class="jungle-decoration" style="top: 20%; right: 8%; animation-delay: 2s;">🦜</div>
+    <div class="jungle-decoration" style="bottom: 15%; left: 10%; animation-delay: 4s;">🌸</div>
+    <div class="jungle-decoration" style="top: 60%; right: 12%; animation-delay: 3s;">🦋</div>
+    <div class="jungle-decoration" style="bottom: 25%; right: 20%; animation-delay: 5s;">🌴</div>
+
+    <div class="container">
+        <h1>🌿 Jungle Typing Adventure 🦜</h1>
+        <p class="subtitle">Type through the jungle and watch the magic happen!</p>
+        
+        <div class="instruction">
+            🌺 Click "Start Adventure" and type the text below. Watch as each letter disappears like magic! 🌺
+        </div>
+
+        <div class="info-box">
+            <div class="info-item">
+                <label>⏱️ Time</label>
+                <span id="timer">0s</span>
+            </div>
+            <div class="info-item">
+                <label>⚡ WPM</label>
+                <span id="wpm">0</span>
+            </div>
+            <div class="info-item">
+                <label>🎯 Accuracy</label>
+                <span id="accuracy">100%</span>
+            </div>
+        </div>
+
+        <div id="textDisplay">Click "Start Adventure" to begin your jungle typing journey!</div>
+
+        <textarea id="inputBox" placeholder="Your typing appears here..." disabled rows="4"></textarea>
+
+        <div class="buttons">
+            <button id="startBtn">🚀 Start Adventure</button>
+            <button id="resetBtn">🔄 New Journey</button>
+        </div>
+
+        <div class="result-box" id="resultBox">
+            <h2>🎉 Journey Complete! 🎉</h2>
+            <div class="result-stats">
+                <div class="result-stat">
+                    <label>⚡ Final WPM</label>
+                    <span id="finalWpm">0</span>
+                </div>
+                <div class="result-stat">
+                    <label>🎯 Accuracy</label>
+                    <span id="finalAccuracy">0%</span>
+                </div>
+                <div class="result-stat">
+                    <label>⏱️ Time</label>
+                    <span id="finalTime">0s</span>
+                </div>
+                <div class="result-stat">
+                    <label>❌ Mistakes</label>
+                    <span id="finalErrors">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            
+            // Longer paragraph texts (4 lines each)
+            const jungleTexts = [
+                "Deep in the heart of the jungle, where sunlight filters through dense canopy leaves, exotic birds sing their morning songs. The air is thick with humidity and the sweet scent of tropical flowers. Monkeys swing from vine to vine while colorful butterflies dance between the trees. This mystical forest holds countless secrets waiting to be discovered by brave adventurers.",
+                
+                "The Amazon rainforest is home to millions of species of plants and animals, many still undiscovered by science. Rivers wind through the landscape like serpents, carrying life-giving water to all corners of this vast ecosystem. Indigenous tribes have lived here for thousands of years, learning to thrive in harmony with nature. Their wisdom teaches us the importance of preserving these precious wild spaces.",
+                
+                "As dawn breaks over the jungle, a symphony of sounds fills the air. Howler monkeys announce the new day with their distinctive calls echoing through the trees. Toucans and parrots add their voices to the chorus while insects create a constant background hum. The forest awakens slowly, each creature playing its part in the daily ritual of survival.",
+                
+                "Climbing vines wrap around ancient trees, creating natural pathways through the forest canopy. Orchids and bromeliads cling to branches, their vibrant colors attracting hummingbirds and insects. The jungle floor is a carpet of fallen leaves, mushrooms, and decomposing matter that feeds new growth. Life and death dance together in an endless cycle of renewal and transformation."
+            ];
+
+            // Get elements
+            const textDisplay = document.getElementById('textDisplay');
+            const inputBox = document.getElementById('inputBox');
+            const startBtn = document.getElementById('startBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const timerDisplay = document.getElementById('timer');
+            const wpmDisplay = document.getElementById('wpm');
+            const accuracyDisplay = document.getElementById('accuracy');
+            const resultBox = document.getElementById('resultBox');
+            const finalWpm = document.getElementById('finalWpm');
+            const finalAccuracy = document.getElementById('finalAccuracy');
+            const finalTime = document.getElementById('finalTime');
+            const finalErrors = document.getElementById('finalErrors');
+
+            // Variables
+            let originalText = '';
+            let startTime = 0;
+            let timerInterval = null;
+            let isTestActive = false;
+
+            function updateTimer() {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                timerDisplay.textContent = elapsed + 's';
+            }
+
+            function updateDisplay(typedText) {
+                let html = '';
+                let correctCount = 0;
+                let errorCount = 0;
+
+                for (let i = 0; i < originalText.length; i++) {
+                    const char = originalText[i];
+                    
+                    if (i < typedText.length) {
+                        if (typedText[i] === char) {
+                            // Correct - show checkmark
+                            html += `<span class="char char-correct">${char}</span>`;
+                            correctCount++;
+                        } else {
+                            // Incorrect
+                            html += `<span class="char char-incorrect">${char}</span>`;
+                            errorCount++;
+                        }
+                    } else if (i === typedText.length) {
+                        // Current character
+                        html += `<span class="char char-current">${char}</span>`;
+                    } else {
+                        // Not yet typed
+                        html += `<span class="char">${char}</span>`;
+                    }
+                }
+
+                textDisplay.innerHTML = html;
+
+                // Update real-time stats
+                if (typedText.length > 0) {
+                    const accuracy = Math.round((correctCount / typedText.length) * 100);
+                    accuracyDisplay.textContent = accuracy + '%';
+
+                    const elapsed = (Date.now() - startTime) / 1000;
+                    const minutes = elapsed / 60;
+                    const words = typedText.length / 5;
+                    const wpm = Math.round(words / minutes);
+                    wpmDisplay.textContent = wpm > 0 ? wpm : 0;
+                }
+            }
+
+            function finishTest() {
+                isTestActive = false;
+                clearInterval(timerInterval);
+                inputBox.disabled = true;
+                startBtn.disabled = false;
+
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const typedText = inputBox.value;
+
+                let errors = 0;
+                for (let i = 0; i < originalText.length; i++) {
+                    if (typedText[i] !== originalText[i]) {
+                        errors++;
+                    }
+                }
+
+                const totalChars = originalText.length;
+                const correctChars = totalChars - errors;
+                const accuracy = Math.round((correctChars / totalChars) * 100);
+                const minutes = elapsed / 60;
+                const words = totalChars / 5;
+                const wpm = Math.round(words / minutes);
+
+                finalWpm.textContent = wpm;
+                finalAccuracy.textContent = accuracy + '%';
+                finalTime.textContent = elapsed + 's';
+                finalErrors.textContent = errors;
+
+                resultBox.classList.add('show');
+            }
+
+            function init() {
+                const randomIndex = Math.floor(Math.random() * jungleTexts.length);
+                originalText = jungleTexts[randomIndex];
+                
+                textDisplay.innerHTML = originalText.split('').map(char => 
+                    `<span class="char">${char}</span>`
+                ).join('');
+                
+                inputBox.value = '';
+                inputBox.disabled = true;
+                timerDisplay.textContent = '0s';
+                wpmDisplay.textContent = '0';
+                accuracyDisplay.textContent = '100%';
+                resultBox.classList.remove('show');
+                isTestActive = false;
+                startBtn.disabled = false;
+                
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                }
+            }
+
+            startBtn.addEventListener('click', function() {
+                if (isTestActive) return;
+                
+                isTestActive = true;
+                inputBox.disabled = false;
+                inputBox.focus();
+                startBtn.disabled = true;
+                resultBox.classList.remove('show');
+                
+                startTime = Date.now();
+                timerInterval = setInterval(updateTimer, 1000);
+            });
+
+            inputBox.addEventListener('input', function() {
+                if (!isTestActive) return;
+                
+                const typedText = inputBox.value;
+                updateDisplay(typedText);
+                
+                if (typedText.length >= originalText.length) {
+                    finishTest();
+                }
+            });
+
+            resetBtn.addEventListener('click', function() {
+                init();
+            });
+
+            init();
+        });
+    </script>
+</body>
+</html>
